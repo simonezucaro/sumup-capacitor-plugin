@@ -27,7 +27,7 @@ import java.util.Iterator;
     SumUpPlugin.REQUEST_CODE_CARD_READER_PAGE
   }
 )
-public class SumUpPlugin extends Plugin {
+public class SumUpPlugin extends Plugin {g
 
   protected static final int REQUEST_CODE_LOGIN             = 1;
   protected static final int REQUEST_CODE_PAYMENT           = 2;
