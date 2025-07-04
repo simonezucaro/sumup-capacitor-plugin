@@ -1,4 +1,4 @@
-package mt.factory.plugins.sumuplugin;
+package mtf.factory.plugins.sumup;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,7 +27,7 @@ import java.util.Iterator;
     SumUpPlugin.REQUEST_CODE_CARD_READER_PAGE
   }
 )
-public class SumUpPlugin extends Plugin {g
+public class SumUpPlugin extends Plugin {
 
   protected static final int REQUEST_CODE_LOGIN             = 1;
   protected static final int REQUEST_CODE_PAYMENT           = 2;
