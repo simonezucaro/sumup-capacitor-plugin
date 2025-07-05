@@ -1,18 +1,54 @@
+`markdown
 # sumup-capacitor-plugin
 
 SumUp SDK Capacitor Plugin
 
+## Prerequisites
+
+- In **android/build.gradle** add the SumUp Maven repository:
+  groovy
+  allprojects {
+      repositories {
+          maven { url 'https://maven.sumup.com/releases' }
+          // … other repositories …
+      }
+  }
+`
+
+* In **android/app/build.gradle** add the SumUp SDK dependency:
+
+  groovy
+  dependencies {
+      implementation 'com.sumup:merchant-sdk:5.0.3'
+      // … other dependencies …
+  }
+  
+* In **variables.gradle** (or `gradle.properties`) ensure:
+
+  groovy
+  minSdkVersion = 26
+  
+* Registered for a merchant account via SumUp’s country website (or received a test account)
+* Received a SumUp card terminal (Solo, Air, Air Lite or PIN+ Terminal)
+* Requested an **Affiliate (Access) Key** via the SumUp Dashboard for Developers
+* **SDK requirements**:
+
+  * Android SDK: `minSdkVersion` 26 or later
+  * Target SDK: 31 or later
+  * Android Gradle Plugin (AGP): 7.3.0 or later
+  * Kotlin: 1.7.21 or later
+  * Java: 11 or later
+
 ## Install
 
-```bash
+bash
 npm install sumup-capacitor-plugin
 npx cap sync
-```
+
 
 ## API
 
 <docgen-index>
-
 * [`login(...)`](#login)
 * [`isLoggedIn()`](#isloggedin)
 * [`getCurrentMerchant()`](#getcurrentmerchant)
@@ -20,7 +56,6 @@ npx cap sync
 * [`prepareForCheckout()`](#prepareforcheckout)
 * [`openCardReaderPage()`](#opencardreaderpage)
 * [`checkout(...)`](#checkout)
-
 </docgen-index>
 
 <docgen-api>
@@ -28,82 +63,72 @@ npx cap sync
 
 ### login(...)
 
-```typescript
+typescript
 login(options: { affiliateKey: string; }) => Promise<{ resultCode: number; message: string; }>
-```
 
-| Param         | Type                                   |
-| ------------- | -------------------------------------- |
-| **`options`** | <code>{ affiliateKey: string; }</code> |
 
-**Returns:** <code>Promise&lt;{ resultCode: number; message: string; }&gt;</code>
-
---------------------
-
+| Param                                                            | Type                       |
+| ---------------------------------------------------------------- | -------------------------- |
+| options                                                          | `{ affiliateKey: string }` |
+| **Returns:** `Promise<{ resultCode: number; message: string; }>` |                            |
 
 ### isLoggedIn()
 
-```typescript
+typescript
 isLoggedIn() => Promise<{ isLoggedIn: boolean; }>
-```
 
-**Returns:** <code>Promise&lt;{ isLoggedIn: boolean; }&gt;</code>
 
---------------------
-
+**Returns:** `Promise<{ isLoggedIn: boolean; }>`
 
 ### getCurrentMerchant()
 
-```typescript
+typescript
 getCurrentMerchant() => Promise<{ merchantCode: string; currency: string; }>
-```
 
-**Returns:** <code>Promise&lt;{ merchantCode: string; currency: string; }&gt;</code>
 
---------------------
-
+**Returns:** `Promise<{ merchantCode: string; currency: string; }>`
 
 ### logout()
 
-```typescript
+typescript
 logout() => Promise<void>
-```
-
---------------------
 
 
 ### prepareForCheckout()
 
-```typescript
+typescript
 prepareForCheckout() => Promise<void>
-```
-
---------------------
 
 
 ### openCardReaderPage()
 
-```typescript
+typescript
 openCardReaderPage() => Promise<{ resultCode: number; message: string; }>
-```
 
-**Returns:** <code>Promise&lt;{ resultCode: number; message: string; }&gt;</code>
 
---------------------
-
+**Returns:** `Promise<{ resultCode: number; message: string; }>`
 
 ### checkout(...)
 
-```typescript
-checkout(options: { amount: number; currency?: string | undefined; title?: string | undefined; receiptEmail?: string | undefined; receiptSMS?: string | undefined; foreignTransactionId?: string | undefined; additionalInfo?: { [key: string]: string; } | undefined; retryEnabled?: boolean | undefined; retryInterval?: number | undefined; retryTimeout?: number | undefined; }) => Promise<{ resultCode: number; message: string; transactionCode?: string; receiptSent?: boolean; }>
-```
+typescript
+checkout(options: {
+  amount: number;
+  currency?: string;
+  title?: string;
+  receiptEmail?: string;
+  receiptSMS?: string;
+  foreignTransactionId?: string;
+  additionalInfo?: { [key: string]: string };
+  retryEnabled?: boolean;
+  retryInterval?: number;
+  retryTimeout?: number;
+}) => Promise<{ resultCode: number; message: string; transactionCode?: string; receiptSent?: boolean; }>
 
-| Param         | Type                                                                                                                                                                                                                                                               |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **`options`** | <code>{ amount: number; currency?: string; title?: string; receiptEmail?: string; receiptSMS?: string; foreignTransactionId?: string; additionalInfo?: { [key: string]: string; }; retryEnabled?: boolean; retryInterval?: number; retryTimeout?: number; }</code> |
 
-**Returns:** <code>Promise&lt;{ resultCode: number; message: string; transactionCode?: string; receiptSent?: boolean; }&gt;</code>
-
---------------------
+| Param                                                                                                             | Type                                                                                                                                                                                                                                                   |
+| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| options                                                                                                           | `{ amount: number; currency?: string; title?: string; receiptEmail?: string; receiptSMS?: string; foreignTransactionId?: string; additionalInfo?: { [key: string]: string }; retryEnabled?: boolean; retryInterval?: number; retryTimeout?: number; }` |
+| **Returns:** `Promise<{ resultCode: number; message: string; transactionCode?: string; receiptSent?: boolean; }>` |                                                                                                                                                                                                                                                        |
 
 </docgen-api>
+
