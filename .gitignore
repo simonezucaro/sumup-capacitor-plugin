@@ -2,6 +2,10 @@
 dist
 node_modules
 
+# demo app files
+demo-sumup-app/node_modules/
+demo-sumup-app/dist/
+
 # iOS files
 Pods
 Podfile.lock
