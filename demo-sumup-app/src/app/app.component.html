@@ -1,0 +1,72 @@
+<div class="sumup-container">
+  <h1>SumUp Demo</h1>
+
+  <!-- 1. Login -->
+  <section>
+    <h2>1. Login</h2>
+    <button (click)="doLogin()">Login SumUp</button>
+    <!-- *ngIf prevents “null” -->
+    <div *ngIf="loginResult" class="result">
+      <div>ResultCode: {{ loginResult?.resultCode }}</div>
+      <div>Message:    {{ loginResult?.message    }}</div>
+    </div>
+  </section>
+
+  <!-- 2. Check Login -->
+  <section>
+    <h2>2. Check Login</h2>
+    <button (click)="doCheckLoggedIn()">Check Login</button>
+    <div *ngIf="loggedIn !== null" class="result">
+      <span *ngIf="loggedIn; else notLogged">User is logged in</span>
+      <ng-template #notLogged>User is not logged in</ng-template>
+    </div>
+  </section>
+
+  <!-- 3. Get Merchant -->
+  <section>
+    <h2>3. Get Merchant</h2>
+    <button (click)="doGetMerchant()">Get Merchant</button>
+    <div *ngIf="merchant" class="result">
+      <div>Merchant Code: {{ merchant?.merchantCode }}</div>
+      <div>Currency:      {{ merchant?.currency     }}</div>
+    </div>
+  </section>
+
+  <!-- 4. Logout -->
+  <section>
+    <h2>4. Logout</h2>
+    <button (click)="doLogout()">Logout</button>
+  </section>
+
+  <!-- 5. Prepare for Checkout -->
+  <section>
+    <h2>5. Prepare for Checkout</h2>
+    <button (click)="doPrepare()">Prepare Terminal</button>
+  </section>
+
+  <!-- 6. Open Card Reader -->
+  <section>
+    <h2>6. Open Card Reader</h2>
+    <button (click)="doOpenReader()">Open Reader</button>
+    <div *ngIf="readerResult" class="result">
+      <div>ResultCode: {{ readerResult?.resultCode }}</div>
+      <div>Message:    {{ readerResult?.message    }}</div>
+    </div>
+  </section>
+
+  <!-- 7. Esegui Checkout -->
+  <section>
+    <h2>7. Checkout </h2>
+    <button (click)="doCheckout()">Checkout €1.23</button>
+    <div *ngIf="checkoutResult" class="result">
+      <div>ResultCode:       {{ checkoutResult?.resultCode       }}</div>
+      <div>Message:          {{ checkoutResult?.message          }}</div>
+      <div *ngIf="checkoutResult?.transactionCode">
+        TransactionCode: {{ checkoutResult.transactionCode }}
+      </div>
+      <div *ngIf="checkoutResult?.receiptSent !== undefined">
+        ReceiptSent:     {{ checkoutResult.receiptSent }}
+      </div>
+    </div>
+  </section>
+</div>
