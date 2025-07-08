@@ -16,7 +16,7 @@
     "ios/Sources",
     "ios/Tests",
     "Package.swift",
-    "SumupCapacitorPlugin.podspec"
+    "SumupCapacitor.podspec"
   ],
   "author": "simone zucaro",
   "license": "MIT",
