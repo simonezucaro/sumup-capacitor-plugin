@@ -1,6 +1,6 @@
 {
   "name": "sumup-capacitor-plugin",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "description": "SumUp SDK Capacitor Plugin",
   "publishConfig": {
     "access": "public"
