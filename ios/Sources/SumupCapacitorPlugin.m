@@ -1,10 +1,11 @@
 #import <Foundation/Foundation.h>
 #import <Capacitor/Capacitor.h>
 
-// Definisce il plugin e i suoi metodi per renderli accessibili da JavaScript.
-// Assicurati che il nome "SumupCapacitor" corrisponda esattamente a quello
-// usato nel tuo file TypeScript (in src/index.ts).
-CAP_PLUGIN(SumupCapacitor, "SumupCapacitor",
+// Registra il plugin e tutti i suoi metodi per renderli accessibili da JavaScript.
+CAP_PLUGIN(SumupCapacitorPlugin, "SumupCapacitorPlugin",
+    // ✅ RIGA MANCANTE AGGIUNTA QUI
+    CAP_PLUGIN_METHOD(setup, CAPPluginReturnPromise);
+
     CAP_PLUGIN_METHOD(login, CAPPluginReturnPromise);
     CAP_PLUGIN_METHOD(isLoggedIn, CAPPluginReturnPromise);
     CAP_PLUGIN_METHOD(getCurrentMerchant, CAPPluginReturnPromise);

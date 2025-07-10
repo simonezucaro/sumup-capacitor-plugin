@@ -1,6 +1,3 @@
----
-
-````markdown
 # sumup-capacitor-plugin
 
 Capacitor Plugin for the SumUp SDK – Native card terminal integration for **Android** and **iOS**.
@@ -21,7 +18,7 @@ Capacitor Plugin for the SumUp SDK – Native card terminal integration for **An
 ```bash
 npm install sumup-capacitor-plugin
 npx cap sync
-````
+```
 
 ---
 
@@ -29,46 +26,46 @@ npx cap sync
 
 ### ✅ Requirements
 
-| Requirement           | Version          |
-| --------------------- | ---------------- |
+| Requirement           | Version         |
+| --------------------- | --------------- |
 | Android SDK           | minSdkVersion 26 |
-| Target SDK            | 31 or higher     |
-| Android Gradle Plugin | 7.3.0 or later   |
-| Kotlin                | 1.7.21 or later  |
-| Java                  | 11 or later      |
+| Target SDK            | 31 or higher    |
+| Android Gradle Plugin | 7.3.0 or later  |
+| Kotlin                | 1.7.21 or later |
+| Java                  | 11 or later     |
 
 ---
 
 ### 🔧 Configuration
 
-1. **Add SumUp Maven repository**
-   In `android/build.gradle`:
+1.  **Add SumUp Maven repository**
+    In `android/build.gradle`:
 
-```groovy
-allprojects {
-    repositories {
-        maven { url 'https://maven.sumup.com/releases' }
-        // ... other repositories ...
+    ```groovy
+    allprojects {
+        repositories {
+            maven { url '[https://maven.sumup.com/releases](https://maven.sumup.com/releases)' }
+            // ... other repositories ...
+        }
     }
-}
-```
+    ```
 
-2. **Add SumUp SDK dependency**
-   In `android/app/build.gradle`:
+2.  **Add SumUp SDK dependency**
+    In `android/app/build.gradle`:
 
-```groovy
-dependencies {
-    implementation 'com.sumup:merchant-sdk:5.0.3'
-    // ... other dependencies ...
-}
-```
+    ```groovy
+    dependencies {
+        implementation 'com.sumup:merchant-sdk:5.0.3'
+        // ... other dependencies ...
+    }
+    ```
 
-3. **Set minimum SDK version**
-   In `gradle.properties` or `variables.gradle`:
+3.  **Set minimum SDK version**
+    In `gradle.properties` or `variables.gradle`:
 
-```groovy
-minSdkVersion = 26
-```
+    ```groovy
+    minSdkVersion = 26
+    ```
 
 ---
 
@@ -76,97 +73,60 @@ minSdkVersion = 26
 
 ### ✅ Requirements
 
-| Requirement    | Version          |
-| -------------- | ---------------- |
-| iOS Deployment | 14.0 or later    |
-| Xcode          | 14.3.1 or later  |
-| iOS SDK        | 16 or later      |
-| Device         | Real iPhone/iPad |
+| Requirement | Version          |
+| ----------- | ---------------- |
+| Xcode       | 14.x or later    |
+| iOS SDK     | 13.0 or later    |
+| Swift       | 5.0 or later     |
+| CocoaPods   | 1.11.x or later  |
 
 ---
 
-### ⚠️ SumUp iOS SDK not included
+### 🔧 Configuration
 
-Due to size and licensing restrictions, the `SumUpSDK.xcframework` is **not included** in this plugin by default.
+1.  **Add SumUp SDK Dependency**
+    The Capacitor plugin should already contain a `.podspec` file. Ensure it includes the `SumUpSDK` dependency. In `YourPluginName.podspec`:
 
-You must manually download and link it.
+    ```ruby
+    s.dependency 'SumUpSDK'
+    ```
 
----
+2.  **Install Pods**
+    After verifying the dependency, run the sync command from your project's root directory. This will install the SDK into your iOS project.
 
-### 🔧 Manual Setup
+    ```bash
+    npx cap sync ios
+    ```
 
-1. **Download SDK**
+3.  **Configure Info.plist**
+    The SumUp SDK requires several keys in your app's `Info.plist` file to function correctly. Open `ios/App/App/Info.plist` and add the following keys inside the main `<dict>` tag:
 
-👉 Download `SumUpSDK.xcframework` from:
-[https://sumup-developer.sumup-vercel.app/tools/sdks/ios-sdk](https://sumup-developer.sumup-vercel.app/tools/sdks/ios-sdk)
-
-2. **Copy into plugin folder**
-
-Place the SDK here:
-
-```
-ios/SumUpSDK/SumUpSDK.xcframework
-```
-
-3. **Add to Xcode**
-
-Open your app with:
-
-```bash
-npx cap open ios
-```
-
-Then in Xcode:
-
-* Go to **File > Add Files to “App”**
-* Select `SumUpSDK.xcframework`
-* Go to **Build Phases > Link Binary With Libraries** → Add `SumUpSDK.xcframework`
-* Go to **Build Settings > Framework Search Paths** and add:
-
-```
-$(SRCROOT)/SumUpSDK
-```
-
-(Set the value to `recursive`)
-
----
-
-### 🔧 Info.plist Permissions
-
-Open `ios/App/App/Info.plist` and add:
-
-```xml
-<key>NSLocationWhenInUseUsageDescription</key>
-<string>Necessary for finding nearby SumUp card readers</string>
-
-<key>NSBluetoothAlwaysUsageDescription</key>
-<string>Used to connect to SumUp card readers</string>
-
-<key>NSBluetoothPeripheralUsageDescription</key>
-<string>Required for Bluetooth access on iOS 12 and earlier</string>
-```
-
----
-
-### 🧭 Orientation (iOS only)
-
-On iPhone, SumUp SDK only supports **portrait** mode.
-On iPad, all orientations are supported.
-
-In `Info.plist` or Xcode target:
-
-```xml
-<key>UISupportedInterfaceOrientations</key>
-<array>
-    <string>UIInterfaceOrientationPortrait</string>
-</array>
-```
+    ```xml
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>sumup</string>
+    </array>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>com.example.app.sumup</string>
+            </array>
+        </dict>
+    </array>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>This app needs Bluetooth access to connect to SumUp card readers.</string>
+    ```
+    -   `LSApplicationQueriesSchemes` allows your app to check if the SumUp app is installed.
+    -   `CFBundleURLTypes` registers a unique URL scheme so that the SumUp app (or a web flow) can redirect back to your application after an operation. **You must replace `com.example.app.sumup` with a unique identifier for your app.**
+    -   `NSBluetoothAlwaysUsageDescription` is the message shown to the user when the app requests Bluetooth permission to connect to a card reader.
 
 ---
 
 # 🧪 Sample App
 
-Coming soon...
+https://github.com/simonezucaro/sumup-capacitor-plugin/tree/main/demo-sumup-app
 
 ---
 
@@ -174,7 +134,8 @@ Coming soon...
 
 <docgen-index>
 
-* [`login(...)`](#login)
+* [`setup(...)`](#setup)
+* [`login()`](#login)
 * [`isLoggedIn()`](#isloggedin)
 * [`getCurrentMerchant()`](#getcurrentmerchant)
 * [`logout()`](#logout)
@@ -185,22 +146,33 @@ Coming soon...
 </docgen-index>
 
 <docgen-api>
-<!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
-
-### login(...)
+### setup(...)
 
 ```typescript
-login(options: { affiliateKey: string; }) => Promise<{ resultCode: number; message: string; }>
+setup(options: { affiliateKey: string; }) => Promise<{ message: string; }>
 ```
 
-| Param         | Type                                   |
-| ------------- | -------------------------------------- |
-| **`options`** | <code>{ affiliateKey: string; }</code> |
+Inizializza il SumUp SDK. Da chiamare una volta prima di altre operazioni.
 
-**Returns:** <code>Promise&lt;{ resultCode: number; message: string; }&gt;</code>
+| Param         | Type                            |
+| ------------- | ------------------------------- |
+| **`options`** | `{ affiliateKey: string; }` |
+
+**Returns:** `Promise<{ message: string; }>`
 
 --------------------
 
+### login()
+
+```typescript
+login() => Promise<{ resultCode: number; message: string; }>
+```
+
+Avvia il flow di login.
+
+**Returns:** `Promise<{ resultCode: number; message: string; }>`
+
+--------------------
 
 ### isLoggedIn()
 
@@ -208,10 +180,11 @@ login(options: { affiliateKey: string; }) => Promise<{ resultCode: number; messa
 isLoggedIn() => Promise<{ isLoggedIn: boolean; }>
 ```
 
-**Returns:** <code>Promise&lt;{ isLoggedIn: boolean; }&gt;</code>
+Controlla se l'utente è attualmente loggato.
+
+**Returns:** `Promise<{ isLoggedIn: boolean; }>`
 
 --------------------
-
 
 ### getCurrentMerchant()
 
@@ -219,10 +192,11 @@ isLoggedIn() => Promise<{ isLoggedIn: boolean; }>
 getCurrentMerchant() => Promise<{ merchantCode: string; currency: string; }>
 ```
 
-**Returns:** <code>Promise&lt;{ merchantCode: string; currency: string; }&gt;</code>
+Recupera i dettagli del merchant corrente.
+
+**Returns:** `Promise<{ merchantCode: string; currency:string; }>`
 
 --------------------
-
 
 ### logout()
 
@@ -230,8 +204,9 @@ getCurrentMerchant() => Promise<{ merchantCode: string; currency: string; }>
 logout() => Promise<void>
 ```
 
---------------------
+Esegue il logout.
 
+--------------------
 
 ### prepareForCheckout()
 
@@ -239,8 +214,9 @@ logout() => Promise<void>
 prepareForCheckout() => Promise<void>
 ```
 
---------------------
+Prepara il terminale per il checkout (warm-up).
 
+--------------------
 
 ### openCardReaderPage()
 
@@ -248,22 +224,25 @@ prepareForCheckout() => Promise<void>
 openCardReaderPage() => Promise<{ resultCode: number; message: string; }>
 ```
 
-**Returns:** <code>Promise&lt;{ resultCode: number; message: string; }&gt;</code>
+Apre la schermata delle impostazioni del lettore di carte.
+
+**Returns:** `Promise<{ resultCode: number; message: string; }>`
 
 --------------------
-
 
 ### checkout(...)
 
 ```typescript
-checkout(options: { amount: number; currency?: string | undefined; title?: string | undefined; receiptEmail?: string | undefined; receiptSMS?: string | undefined; foreignTransactionId?: string | undefined; additionalInfo?: { [key: string]: string; } | undefined; retryEnabled?: boolean | undefined; retryInterval?: number | undefined; retryTimeout?: number | undefined; }) => Promise<{ resultCode: number; message: string; transactionCode?: string; receiptSent?: boolean; }>
+checkout(options: { amount: number; currency?: string; title?: string; foreignTransactionId?: string; }) => Promise<{ resultCode: number; message: string; transactionCode?: string; }>
 ```
 
-| Param         | Type                                                                                                                                                                                                                                                               |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **`options`** | <code>{ amount: number; currency?: string; title?: string; receiptEmail?: string; receiptSMS?: string; foreignTransactionId?: string; additionalInfo?: { [key: string]: string; }; retryEnabled?: boolean; retryInterval?: number; retryTimeout?: number; }</code> |
+Esegue un pagamento.
 
-**Returns:** <code>Promise&lt;{ resultCode: number; message: string; transactionCode?: string; receiptSent?: boolean; }&gt;</code>
+| Param         | Type                                                                                                |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| **`options`** | `{ amount: number; currency?: string; title?: string; foreignTransactionId?: string; }` |
+
+**Returns:** `Promise<{ resultCode: number; message: string; transactionCode?: string; }>`
 
 --------------------
 

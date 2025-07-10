@@ -1,25 +1,50 @@
 export interface SumupCapacitorPlugin {
-  login(options: { affiliateKey: string }): Promise<{ resultCode: number, message: string }>;
+  /**
+   * Initializes the SumUp SDK. Must be called once before any other operations.
+   */
+  setup(options: { affiliateKey: string }): Promise<{ message: string }>;
+
+  /**
+   * Starts the login flow.
+   */
+  login(): Promise<{ resultCode: number; message: string }>;
+
+  /**
+   * Checks if the user is currently logged in.
+   */
   isLoggedIn(): Promise<{ isLoggedIn: boolean }>;
-  getCurrentMerchant(): Promise<{ merchantCode: string, currency: string }>;
+  
+  /**
+   * Retrieves the details of the current merchant.
+   */
+  getCurrentMerchant(): Promise<{ merchantCode: string; currency: string }>;
+  
+  /**
+   * Performs a logout.
+   */
   logout(): Promise<void>;
+  
+  /**
+   * Prepares the terminal for checkout (warm-up).
+   */
   prepareForCheckout(): Promise<void>;
-  openCardReaderPage(): Promise<{ resultCode: number, message: string }>;
+  
+  /**
+   * Opens the card reader settings screen.
+   */
+  openCardReaderPage(): Promise<{ resultCode: number; message: string }>;
+  
+  /**
+   * Performs a payment.
+   */
   checkout(options: {
     amount: number;
     currency?: string;
     title?: string;
-    receiptEmail?: string;
-    receiptSMS?: string;
     foreignTransactionId?: string;
-    additionalInfo?: { [key: string]: string };
-    retryEnabled?: boolean;
-    retryInterval?: number;
-    retryTimeout?: number;
   }): Promise<{
     resultCode: number;
     message: string;
     transactionCode?: string;
-    receiptSent?: boolean;
   }>;
 }

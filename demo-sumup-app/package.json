@@ -21,7 +21,7 @@
     "@capacitor/cli": "^7.4.1",
     "@capacitor/core": "^7.4.1",
     "rxjs": "~7.8.0",
-    "sumup-capacitor-plugin": "^1.1.0",
+    "sumup-capacitor-plugin": "file:..",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
   },

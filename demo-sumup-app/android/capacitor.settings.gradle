@@ -3,4 +3,4 @@ include ':capacitor-android'
 project(':capacitor-android').projectDir = new File('../../../node_modules/@capacitor/android/capacitor')
 
 include ':sumup-capacitor-plugin'
-project(':sumup-capacitor-plugin').projectDir = new File('../node_modules/sumup-capacitor-plugin/android')
+project(':sumup-capacitor-plugin').projectDir = new File('../../android')

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core'; // Import OnInit for lifecycle hooks
 import { RouterOutlet } from '@angular/router';
 import {
   SumupService,
@@ -7,112 +7,112 @@ import {
 } from './sumup.service';
 import { NgIf } from '@angular/common';
 
-/**
- * The root component of the SumUp demo application.
- * 
- * This component manages the main application state and provides methods to interact with the SumUp payment service,
- * including authentication, merchant data retrieval, payment processing, and card reader operations.
- * 
- * @remarks
- * - Handles login/logout and session state with SumUp.
- * - Retrieves merchant information and manages payment transactions.
- * - Prepares the terminal for checkout and opens the card reader interface.
- * - Stores and exposes the results of each operation for UI feedback.
- * 
- * @example
- * ```typescript
- * // Example usage in a template:
- * <button (click)="doLogin()">Login</button>
- * <button (click)="doCheckout()">Pay</button>
- * ```
- * 
- * @property loginResult - Stores the result of the login operation, including result code and message.
- * @property loggedIn - Indicates whether the user is currently authenticated with SumUp.
- * @property merchant - Contains merchant details such as merchant code and currency.
- * @property checkoutResult - Holds the result of the last payment transaction.
- * @property readerResult - Stores the result of opening the card reader page.
- * 
- * @method doLogin - Initiates the login process with SumUp using a predefined API key.
- * @method doCheckLoggedIn - Checks if the user is currently logged in to SumUp.
- * @method doGetMerchant - Retrieves the current merchant's information from SumUp.
- * @method doLogout - Logs out the current user and resets session-related state.
- * @method doPrepare - Prepares the terminal for a checkout operation.
- * @method doOpenReader - Opens the card reader interface and stores the result.
- * @method doCheckout - Initiates a payment transaction with predefined options.
- * 
- * @dependency SumupService - Service responsible for communicating with the SumUp SDK or API.
- */
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, NgIf],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.scss'
 })
-export class AppComponent {
-  // Properties to store results and state
+export class AppComponent implements OnInit { // Implement OnInit to use its lifecycle hooks
+  // State variables to display results in the template
   loginResult: { resultCode: number; message: string } | null = null;
   loggedIn = false;
   merchant: { merchantCode: string; currency: string } | null = null;
   checkoutResult: PaymentResult | null = null;
   readerResult: { resultCode: number; message: string } | null = null;
+  
+  // A flag to enable buttons only after a successful setup
+  isSumupReady = false;
 
-  constructor(private _sumupService: SumupService) {}
+  constructor(private sumup: SumupService) {}
 
-  // 1) Login
+  // ngOnInit is executed when the component is initialized
+  ngOnInit() {
+    this.doSetup();
+  }
+
+  // NEW METHOD: Executes the setup on startup
+  async doSetup() {
+    try {
+      // Call setup once with your API key
+      await this.sumup.setup('sup_afk_V3XgW1VFygZqgAo2jqHkIfMQDAAjQs0c');
+      this.isSumupReady = true;
+      console.log('✅ SumUp SDK is ready.');
+      // After setup, immediately check if the user is already logged in
+      await this.doCheckLoggedIn();
+      if (this.loggedIn) {
+        await this.doGetMerchant();
+      }
+    } catch (err) {
+      this.isSumupReady = false;
+      console.error('❌ SumUp setup failed:', err);
+      // You could display an error to the user here
+    }
+  }
+
+  // MODIFIED METHOD: No longer receives the API key
   async doLogin() {
     try {
-      this.loginResult = await this._sumupService.login('sup_afk_V3XgW1VFygZqgAo2jqHkIfMQDAAjQs0c');
+      this.loginResult = await this.sumup.login();
+      // After login, update the state
+      await this.doCheckLoggedIn();
+      if (this.loggedIn) {
+        await this.doGetMerchant();
+      }
     } catch (err) {
-      console.error('Error login:', err);
+      console.error('Login error:', err);
     }
   }
 
   // 2) Check if logged in
   async doCheckLoggedIn() {
     try {
-      this.loggedIn = await this._sumupService.isLoggedIn();
+      this.loggedIn = await this.sumup.isLoggedIn();
     } catch (err) {
-      console.error('Error check login:', err);
+      console.error('Check login error:', err);
     }
   }
 
-  // 3) Get Merchant Information
+  // 3) Get merchant data
   async doGetMerchant() {
     try {
-      this.merchant = await this._sumupService.getCurrentMerchant();
+      this.merchant = await this.sumup.getCurrentMerchant();
     } catch (err) {
-      console.error('Error getMerchant:', err);
+      console.error('Get merchant error:', err);
     }
   }
 
   // 4) Logout
   async doLogout() {
     try {
-      await this._sumupService.logout();
+      await this.sumup.logout();
+      // Reset all state variables
       this.loggedIn = false;
       this.merchant = null;
+      this.loginResult = null;
+      console.log('Logout successful.');
     } catch (err) {
-      console.error('Error logging out:', err);
+      console.error('Logout error:', err);
     }
   }
 
   // 5) Prepare for checkout
   async doPrepare() {
     try {
-      await this._sumupService.prepareForCheckout();
+      await this.sumup.prepareForCheckout();
       console.log('Terminal ready for checkout');
     } catch (err) {
-      console.error('Error preparing for checkout:', err);
+      console.error('Prepare error:', err);
     }
   }
 
   // 6) Open Card Reader Page
   async doOpenReader() {
     try {
-      this.readerResult = await this._sumupService.openCardReaderPage();
+      this.readerResult = await this.sumup.openCardReaderPage();
     } catch (err) {
-      console.error('Error opening card reader:', err);
+      console.error('Open reader error:', err);
     }
   }
 
@@ -122,20 +122,18 @@ export class AppComponent {
       amount: 1.23,
       currency: 'EUR',
       title: 'Taxi Ride',
-      receiptEmail: 'cliente@example.com',
-      receiptSMS: '+391234567890',
       foreignTransactionId: 'order-' + Date.now(),
-      additionalInfo: { orderId: '1234', from: 'Rome', to: 'Milan' },
-      retryEnabled: true,
-      retryInterval: 2000,
-      retryTimeout: 60000,
+      // The 'additionalInfo' and retry options are only handled on Android
+      // additionalInfo: { orderId: '1234', from: 'Rome', to: 'Milan' },
+      // retryEnabled: true,
+      // retryInterval: 2000,
+      // retryTimeout: 60000,
     };
 
     try {
-      this.checkoutResult = await this._sumupService.checkout(opts);
+      this.checkoutResult = await this.sumup.checkout(opts);
     } catch (err) {
-      console.error('Error during checkout:', err);
+      console.error('Checkout error:', err);
     }
   }
-
 }
